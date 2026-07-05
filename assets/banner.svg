@@ -1,0 +1,283 @@
+<svg viewBox="0 0 1200 520" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', Arial, sans-serif">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0e1a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d1b2e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0078d4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#005a9e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="redGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#c0392b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#922b21;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a7f37;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#145a27;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6f42c1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#512da8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="tealGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00796b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#004d40;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="shadow">
+      <feDropShadow dx="2" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+    <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#0078d4" opacity="0.8"/>
+    </marker>
+    <marker id="arrowGray" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#8899aa" opacity="0.8"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#e53935" opacity="0.8"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="520" fill="url(#bgGrad)"/>
+
+  <!-- Grid dots for techy feel -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <circle cx="1" cy="1" r="1" fill="#1e3a5f" opacity="0.4"/>
+  </pattern>
+  <rect width="1200" height="520" fill="url(#grid)"/>
+
+  <!-- Title block -->
+  <rect x="0" y="0" width="1200" height="70" fill="#0d1b2e" opacity="0.9"/>
+  <rect x="0" y="68" width="1200" height="2" fill="#0078d4" opacity="0.8"/>
+
+  <!-- Shield icon -->
+  <path d="M30 14 L52 14 L52 38 C52 50 41 58 41 58 C41 58 30 50 30 38 Z" fill="none" stroke="#0078d4" stroke-width="2"/>
+  <path d="M34 32 L39 37 L50 22" stroke="#00d4ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <text x="68" y="30" font-size="22" font-weight="700" fill="#ffffff" letter-spacing="1">PROJECT ATLAS</text>
+  <text x="68" y="52" font-size="13" fill="#8bafd4" letter-spacing="0.5">Microsoft SOC Tier 1/2 Simulation  ·  Sentinel · Defender XDR · Entra ID Protection · Azure Arc</text>
+
+  <!-- SC-200 badge -->
+  <rect x="1050" y="15" width="130" height="40" rx="6" fill="#0078d4" opacity="0.2" stroke="#0078d4" stroke-width="1"/>
+  <text x="1115" y="31" font-size="10" fill="#64b5f6" text-anchor="middle" font-weight="600">SC-200 ALIGNED</text>
+  <text x="1115" y="47" font-size="9" fill="#8bafd4" text-anchor="middle">Jul 2026</text>
+
+  <!-- ═══════════════════════════════ -->
+  <!-- ZONE 1: Host Machine (left) -->
+  <!-- ═══════════════════════════════ -->
+  <rect x="20" y="90" width="200" height="130" rx="8" fill="#111a2c" stroke="#2c4a6e" stroke-width="1.5"/>
+  <rect x="20" y="90" width="200" height="26" rx="8" fill="#1a3050"/>
+  <rect x="20" y="104" width="200" height="12" rx="0" fill="#1a3050"/>
+  <text x="120" y="107" font-size="10" fill="#90caf9" text-anchor="middle" font-weight="600">MacBook Air M4 (ARM64)</text>
+  <text x="120" y="130" font-size="9" fill="#607d8b" text-anchor="middle">Host · macOS · VirtualBox 7</text>
+
+  <!-- VirtualBox icon area -->
+  <rect x="35" y="140" width="160" height="70" rx="6" fill="#0d1525" stroke="#2a3f55" stroke-width="1"/>
+  <text x="115" y="158" font-size="9" fill="#546e7a" text-anchor="middle" font-weight="600">VirtualBox 7 · NAT Network</text>
+
+  <!-- Kali VM -->
+  <rect x="40" y="162" width="64" height="40" rx="5" fill="url(#redGrad)" filter="url(#shadow)"/>
+  <text x="72" y="178" font-size="8.5" fill="#fff" text-anchor="middle" font-weight="700">Kali Linux</text>
+  <text x="72" y="190" font-size="7.5" fill="#ffcdd2" text-anchor="middle">10.0.2.15</text>
+  <text x="72" y="200" font-size="7" fill="#ef9a9a" text-anchor="middle">ARM64</text>
+
+  <!-- Windows VM -->
+  <rect x="118" y="162" width="70" height="40" rx="5" fill="url(#tealGrad)" filter="url(#shadow)"/>
+  <text x="153" y="177" font-size="8" fill="#fff" text-anchor="middle" font-weight="700">Windows 11</text>
+  <text x="153" y="188" font-size="7.5" fill="#b2dfdb" text-anchor="middle">DESKTOP-TRF9U79</text>
+  <text x="153" y="198" font-size="7" fill="#80cbc4" text-anchor="middle">ARM64 Victim</text>
+
+  <!-- ═══════════════════════════════ -->
+  <!-- ZONE 2: Endpoint Stack (center-left) -->
+  <!-- ═══════════════════════════════ -->
+  <rect x="260" y="90" width="180" height="130" rx="8" fill="#111a2c" stroke="#2c4a6e" stroke-width="1.5"/>
+  <rect x="260" y="90" width="180" height="26" rx="8" fill="#1a3050"/>
+  <rect x="260" y="104" width="180" height="12" rx="0" fill="#1a3050"/>
+  <text x="350" y="107" font-size="10" fill="#90caf9" text-anchor="middle" font-weight="600">Endpoint Stack</text>
+
+  <rect x="275" y="120" width="150" height="28" rx="5" fill="#0d1f38" stroke="#1e4076" stroke-width="1"/>
+  <text x="350" y="132" font-size="8.5" fill="#64b5f6" text-anchor="middle" font-weight="600">Sysmon v15.21</text>
+  <text x="350" y="143" font-size="7.5" fill="#546e7a" text-anchor="middle">SwiftOnSecurity config</text>
+
+  <rect x="275" y="154" width="150" height="28" rx="5" fill="#0d1f38" stroke="#1e4076" stroke-width="1"/>
+  <text x="350" y="166" font-size="8.5" fill="#64b5f6" text-anchor="middle" font-weight="600">Azure Monitor Agent</text>
+  <text x="350" y="177" font-size="7.5" fill="#546e7a" text-anchor="middle">AMA Extension (Arc)</text>
+
+  <rect x="275" y="188" width="150" height="26" rx="5" fill="#0d1f38" stroke="#1e4076" stroke-width="1"/>
+  <text x="350" y="200" font-size="8.5" fill="#64b5f6" text-anchor="middle" font-weight="600">Azure Arc</text>
+  <text x="350" y="210" font-size="7.5" fill="#546e7a" text-anchor="middle">Connected · East US</text>
+
+  <!-- ═══════════════════════════════ -->
+  <!-- ZONE 3: Azure Cloud (center) -->
+  <!-- ═══════════════════════════════ -->
+  <rect x="480" y="90" width="220" height="270" rx="8" fill="#0d1525" stroke="#0078d4" stroke-width="1.5"/>
+  <rect x="480" y="90" width="220" height="26" rx="8" fill="#062244"/>
+  <rect x="480" y="104" width="220" height="12" rx="0" fill="#062244"/>
+  <text x="590" y="107" font-size="10" fill="#64b5f6" text-anchor="middle" font-weight="600">Microsoft Azure · East US</text>
+
+  <!-- LAW -->
+  <rect x="494" y="122" width="192" height="34" rx="5" fill="url(#blueGrad)" filter="url(#shadow)"/>
+  <text x="590" y="136" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">Log Analytics Workspace</text>
+  <text x="590" y="149" font-size="8" fill="#bbdefb" text-anchor="middle">law-soc-atlas · rg-soc-atlas</text>
+
+  <!-- DCR -->
+  <rect x="494" y="163" width="192" height="30" rx="5" fill="#0d1f38" stroke="#1565c0" stroke-width="1"/>
+  <text x="590" y="175" font-size="8.5" fill="#90caf9" text-anchor="middle" font-weight="600">Data Collection Rule</text>
+  <text x="590" y="186" font-size="7.5" fill="#546e7a" text-anchor="middle">dcr-soc-atlas-sysmon</text>
+
+  <!-- Sentinel -->
+  <rect x="494" y="200" width="192" height="34" rx="5" fill="url(#purpleGrad)" filter="url(#shadow)"/>
+  <text x="590" y="215" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">Microsoft Sentinel</text>
+  <text x="590" y="228" font-size="8" fill="#e1bee7" text-anchor="middle">SIEM · Analytics Rules · SOAR</text>
+
+  <!-- Defender XDR -->
+  <rect x="494" y="241" width="192" height="30" rx="5" fill="#0d1f38" stroke="#512da8" stroke-width="1"/>
+  <text x="590" y="253" font-size="8.5" fill="#ce93d8" text-anchor="middle" font-weight="600">Microsoft Defender XDR</text>
+  <text x="590" y="264" font-size="7.5" fill="#546e7a" text-anchor="middle">Incident ID 2 · High · 8 Alerts</text>
+
+  <!-- Logic App SOAR -->
+  <rect x="494" y="278" width="192" height="30" rx="5" fill="#0d1f38" stroke="#00796b" stroke-width="1"/>
+  <text x="590" y="290" font-size="8.5" fill="#80cbc4" text-anchor="middle" font-weight="600">Azure Logic App (SOAR)</text>
+  <text x="590" y="302" font-size="7.5" fill="#546e7a" text-anchor="middle">Microsoft Graph API · Auto-response</text>
+
+  <!-- rg-soc-atlas label -->
+  <text x="590" y="348" font-size="8" fill="#37474f" text-anchor="middle">rg-soc-atlas</text>
+
+  <!-- ═══════════════════════════════ -->
+  <!-- ZONE 4: Identity (center-right) -->
+  <!-- ═══════════════════════════════ -->
+  <rect x="740" y="90" width="200" height="200" rx="8" fill="#111a2c" stroke="#1a7f37" stroke-width="1.5"/>
+  <rect x="740" y="90" width="200" height="26" rx="8" fill="#1a3020"/>
+  <rect x="740" y="104" width="200" height="12" rx="0" fill="#1a3020"/>
+  <text x="840" y="107" font-size="10" fill="#81c784" text-anchor="middle" font-weight="600">Microsoft Entra ID P2</text>
+
+  <text x="840" y="132" font-size="8.5" fill="#546e7a" text-anchor="middle">VANPASSSC200.onmicrosoft.com</text>
+
+  <rect x="754" y="140" width="172" height="28" rx="5" fill="url(#greenGrad)" filter="url(#shadow)"/>
+  <text x="840" y="152" font-size="8.5" fill="#fff" text-anchor="middle" font-weight="700">Identity Protection</text>
+  <text x="840" y="163" font-size="7.5" fill="#c8e6c9" text-anchor="middle">Anonymous IP · Anomalous Token</text>
+
+  <rect x="754" y="175" width="172" height="28" rx="5" fill="#0d1f1a" stroke="#388e3c" stroke-width="1"/>
+  <text x="840" y="187" font-size="8.5" fill="#81c784" text-anchor="middle" font-weight="600">Conditional Access</text>
+  <text x="840" y="198" font-size="7.5" fill="#546e7a" text-anchor="middle">Block Sign-in Risk (Anon IP)</text>
+
+  <rect x="754" y="210" width="172" height="28" rx="5" fill="#0d1f1a" stroke="#388e3c" stroke-width="1"/>
+  <text x="840" y="222" font-size="8.5" fill="#81c784" text-anchor="middle" font-weight="600">Risky Users / Sign-ins</text>
+  <text x="840" y="233" font-size="7.5" fill="#546e7a" text-anchor="middle">5 risky events · 2 high-risk users</text>
+
+  <rect x="754" y="245" width="172" height="28" rx="5" fill="#0d1f1a" stroke="#388e3c" stroke-width="1"/>
+  <text x="840" y="257" font-size="8.5" fill="#81c784" text-anchor="middle" font-weight="600">M365 Attack Sim Training</text>
+  <text x="840" y="268" font-size="7.5" fill="#e57373" text-anchor="middle">100% users compromised</text>
+
+  <!-- ═══════════════════════════════ -->
+  <!-- ZONE 5: Attacker / Internet (right) -->
+  <!-- ═══════════════════════════════ -->
+  <rect x="980" y="90" width="190" height="160" rx="8" fill="#1a0d0d" stroke="#c62828" stroke-width="1.5"/>
+  <rect x="980" y="90" width="190" height="26" rx="8" fill="#2a1010"/>
+  <rect x="980" y="104" width="190" height="12" rx="0" fill="#2a1010"/>
+  <text x="1075" y="107" font-size="10" fill="#ef9a9a" text-anchor="middle" font-weight="600">Attacker / Threat Actor</text>
+
+  <rect x="994" y="122" width="162" height="26" rx="5" fill="#1a0000" stroke="#c62828" stroke-width="1"/>
+  <text x="1075" y="134" font-size="8.5" fill="#ef9a9a" text-anchor="middle" font-weight="600">Hydra v9.5</text>
+  <text x="1075" y="144" font-size="7.5" fill="#546e7a" text-anchor="middle">RDP Brute Force · T1110.001</text>
+
+  <rect x="994" y="154" width="162" height="26" rx="5" fill="#1a0000" stroke="#c62828" stroke-width="1"/>
+  <text x="1075" y="166" font-size="8.5" fill="#ef9a9a" text-anchor="middle" font-weight="600">Encoded PowerShell</text>
+  <text x="1075" y="176" font-size="7.5" fill="#546e7a" text-anchor="middle">T1059.001 + T1027</text>
+
+  <rect x="994" y="186" width="162" height="26" rx="5" fill="#1a0000" stroke="#c62828" stroke-width="1"/>
+  <text x="1075" y="198" font-size="8.5" fill="#ef9a9a" text-anchor="middle" font-weight="600">Tor Browser</text>
+  <text x="1075" y="208" font-size="7.5" fill="#546e7a" text-anchor="middle">Anonymous IP · T1090.003</text>
+
+  <rect x="994" y="218" width="162" height="26" rx="5" fill="#1a0000" stroke="#c62828" stroke-width="1"/>
+  <text x="1075" y="230" font-size="8.5" fill="#ef9a9a" text-anchor="middle" font-weight="600">Phishing Simulation</text>
+  <text x="1075" y="240" font-size="7.5" fill="#546e7a" text-anchor="middle">T1566.002 · M365 Attack Sim</text>
+
+  <!-- ═══════════════════════════════ -->
+  <!-- ARROWS / CONNECTIONS -->
+  <!-- ═══════════════════════════════ -->
+
+  <!-- Kali attacks Windows (NAT) -->
+  <line x1="104" y1="182" x2="118" y2="182" stroke="#e53935" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrowRed)"/>
+
+  <!-- Windows → Endpoint Stack -->
+  <line x1="220" y1="182" x2="260" y2="182" stroke="#8899aa" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+
+  <!-- AMA → DCR (Endpoint Stack → Azure) -->
+  <line x1="440" y1="170" x2="480" y2="170" stroke="#0078d4" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+  <text x="458" y="165" font-size="7.5" fill="#0078d4" text-anchor="middle">AMA→DCR</text>
+
+  <!-- Azure → Entra -->
+  <line x1="700" y1="200" x2="740" y2="200" stroke="#81c784" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+  <text x="718" y="195" font-size="7.5" fill="#81c784" text-anchor="middle">OIDC</text>
+
+  <!-- Tor / Attacker → Entra -->
+  <line x1="980" y1="198" x2="942" y2="198" stroke="#e53935" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrowRed)"/>
+  <text x="960" y="193" font-size="7.5" fill="#e53935" text-anchor="middle">Tor</text>
+
+  <!-- Phishing → M365 -->
+  <line x1="980" y1="232" x2="942" y2="232" stroke="#e53935" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrowRed)"/>
+
+  <!-- ═══════════════════════════════ -->
+  <!-- MITRE ATT&CK strip -->
+  <!-- ═══════════════════════════════ -->
+  <rect x="20" y="380" width="1160" height="60" rx="6" fill="#0d1525" stroke="#1e3a5f" stroke-width="1"/>
+  <text x="600" y="398" font-size="9" fill="#546e7a" text-anchor="middle" font-weight="600" letter-spacing="2">MITRE ATT&amp;CK TECHNIQUES SIMULATED</text>
+
+  <rect x="35" y="406" width="170" height="24" rx="4" fill="#1a0000" stroke="#c62828" stroke-width="1"/>
+  <text x="120" y="418" font-size="8" fill="#ef9a9a" text-anchor="middle" font-weight="600">T1110.001</text>
+  <text x="120" y="428" font-size="7" fill="#546e7a" text-anchor="middle">Brute Force: Password Guess</text>
+
+  <rect x="215" y="406" width="185" height="24" rx="4" fill="#1a0000" stroke="#c62828" stroke-width="1"/>
+  <text x="307" y="418" font-size="8" fill="#ef9a9a" text-anchor="middle" font-weight="600">T1059.001 + T1027</text>
+  <text x="307" y="428" font-size="7" fill="#546e7a" text-anchor="middle">PowerShell + Obfuscation</text>
+
+  <rect x="408" y="406" width="170" height="24" rx="4" fill="#1a0000" stroke="#c62828" stroke-width="1"/>
+  <text x="493" y="418" font-size="8" fill="#ef9a9a" text-anchor="middle" font-weight="600">T1566.002</text>
+  <text x="493" y="428" font-size="7" fill="#546e7a" text-anchor="middle">Spearphishing Link</text>
+
+  <rect x="586" y="406" width="170" height="24" rx="4" fill="#1a0000" stroke="#c62828" stroke-width="1"/>
+  <text x="671" y="418" font-size="8" fill="#ef9a9a" text-anchor="middle" font-weight="600">T1078.004</text>
+  <text x="671" y="428" font-size="7" fill="#546e7a" text-anchor="middle">Valid Accounts: Cloud</text>
+
+  <rect x="764" y="406" width="170" height="24" rx="4" fill="#1a0000" stroke="#c62828" stroke-width="1"/>
+  <text x="849" y="418" font-size="8" fill="#ef9a9a" text-anchor="middle" font-weight="600">T1090.003</text>
+  <text x="849" y="428" font-size="7" fill="#546e7a" text-anchor="middle">Multi-hop Proxy: Tor</text>
+
+  <rect x="942" y="406" width="222" height="24" rx="4" fill="#0d1f1a" stroke="#388e3c" stroke-width="1"/>
+  <text x="1053" y="418" font-size="8" fill="#81c784" text-anchor="middle" font-weight="600">Incident ID 2 · True Positive</text>
+  <text x="1053" y="428" font-size="7" fill="#546e7a" text-anchor="middle">Compromised Account · High</text>
+
+  <!-- ═══════════════════════════════ -->
+  <!-- Bottom stats bar -->
+  <!-- ═══════════════════════════════ -->
+  <rect x="0" y="454" width="1200" height="66" fill="#060d18"/>
+  <rect x="0" y="454" width="1200" height="1.5" fill="#0078d4" opacity="0.5"/>
+
+  <!-- Stats -->
+  <text x="100" y="478" font-size="22" font-weight="700" fill="#0078d4" text-anchor="middle" filter="url(#glow)">5</text>
+  <text x="100" y="494" font-size="9" fill="#607d8b" text-anchor="middle">ATT&amp;CK Techniques</text>
+
+  <text x="280" y="478" font-size="22" font-weight="700" fill="#ce93d8" text-anchor="middle" filter="url(#glow)">8</text>
+  <text x="280" y="494" font-size="9" fill="#607d8b" text-anchor="middle">Correlated Alerts</text>
+
+  <text x="460" y="478" font-size="22" font-weight="700" fill="#e53935" text-anchor="middle" filter="url(#glow)">100%</text>
+  <text x="460" y="494" font-size="9" fill="#607d8b" text-anchor="middle">Phish Compromise Rate</text>
+
+  <text x="640" y="478" font-size="22" font-weight="700" fill="#81c784" text-anchor="middle" filter="url(#glow)">5</text>
+  <text x="640" y="494" font-size="9" fill="#607d8b" text-anchor="middle">Risky Sign-in Events</text>
+
+  <text x="820" y="478" font-size="22" font-weight="700" fill="#64b5f6" text-anchor="middle" filter="url(#glow)">2</text>
+  <text x="820" y="494" font-size="9" fill="#607d8b" text-anchor="middle">Custom KQL Rules Built</text>
+
+  <text x="1000" y="478" font-size="22" font-weight="700" fill="#ffb74d" text-anchor="middle" filter="url(#glow)">0</text>
+  <text x="1000" y="494" font-size="9" fill="#607d8b" text-anchor="middle">Telemetry (AMA Gap)</text>
+
+  <text x="1150" y="478" font-size="10" fill="#37474f" text-anchor="middle">ATLAS</text>
+  <text x="1150" y="494" font-size="9" fill="#263238" text-anchor="middle">Jul 2026</text>
+</svg>
