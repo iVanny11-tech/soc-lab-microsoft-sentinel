@@ -4,9 +4,8 @@
 
 # Project ATLAS — Microsoft SOC Tier 1/2 Simulation
 
-> A self-directed, end-to-end Security Operations Centre simulation built on Microsoft Sentinel, Entra ID Protection, and a custom attacker/victim lab. Designed to demonstrate senior SOC analyst competencies across the full incident lifecycle: detection engineering, adversary simulation, triage, containment, identity remediation, and proactive threat hunting.
+> A self-directed, end-to-end Security Operations Centre simulation built on Microsoft Sentinel, Entra ID Protection, and a custom attacker/victim lab. Covering the full incident lifecycle: detection engineering, adversary simulation, triage, containment, identity remediation, and proactive threat hunting.
 
-[![SC-200](https://img.shields.io/badge/SC--200-Aligned-0078d4?style=flat-square&logo=microsoft)](https://learn.microsoft.com/en-us/certifications/exams/sc-200/)
 [![Platform](https://img.shields.io/badge/Platform-Microsoft%20Sentinel-6f42c1?style=flat-square&logo=microsoftazure)](https://azure.microsoft.com/en-us/products/microsoft-sentinel)
 [![Defender XDR](https://img.shields.io/badge/Defender-XDR-00b4d8?style=flat-square&logo=microsoftdefender)](https://security.microsoft.com)
 [![ATT&CK](https://img.shields.io/badge/MITRE-ATT%26CK-e53935?style=flat-square)](https://attack.mitre.org/)
@@ -48,7 +47,7 @@ The lab simulates a hybrid enterprise environment: a local victim machine runnin
 | Azure Region | East US |
 | Resource Group | `rg-soc-atlas` |
 | Log Analytics Workspace | `law-soc-atlas` |
-| SIEM | Microsoft Sentinel (connected to `law-soc-atlas`) |
+| SIEM | Microsoft Sentinel |
 | XDR | Microsoft Defender XDR |
 | Identity | Entra ID P2 · Identity Protection · Conditional Access |
 | Endpoint Telemetry | Sysmon v15.21 + AMA + DCR `dcr-soc-atlas-sysmon` |
@@ -84,10 +83,7 @@ The Log Analytics Workspace (`law-soc-atlas`) is the central log store. Every se
 
 ### Step 4 — Activate Microsoft Sentinel
 
-Microsoft Sentinel is connected to `law-soc-atlas`, enabling the SIEM layer: analytics rules, incidents, workbooks, and the SOAR playbook.
-
-![Sentinel connected to law-soc-atlas](assets/screenshots/00b-sentinel-connected-to-law.png)
-*Microsoft Sentinel successfully connected to the law-soc-atlas workspace — SIEM layer active*
+With the Log Analytics Workspace provisioned, Microsoft Sentinel was added to `law-soc-atlas` through the Azure portal (Microsoft Sentinel → Add → select `law-soc-atlas`). This activates the SIEM layer: analytics rules, incidents, workbooks, threat intelligence, and the SOAR playbook. The full Sentinel portal is shown in [Section 4 — Detection Engineering](#4-day-2--detection-engineering-custom-sentinel-analytics-rules) where the custom rules are built.
 
 ---
 
@@ -567,14 +563,11 @@ Full threat hunt: [`Threat-Hunt-Report.md`](Threat-Hunt-Report.md)
 | [kql/hunt-telemetry-gap-check.kql](kql/hunt-telemetry-gap-check.kql) | Telemetry coverage validation query |
 | [attack-navigator/atlas-attack-layer.json](attack-navigator/atlas-attack-layer.json) | MITRE ATT&CK Navigator heatmap |
 | [assets/banner.svg](assets/banner.svg) | Lab architecture diagram |
-| [Project-ATLAS-SOC-Tier1-Blueprint.md](Project-ATLAS-SOC-Tier1-Blueprint.md) | Full lab blueprint and design notes |
 
 ---
 
 <div align="center">
 
 **Built by Ivan Yamoah Baoakye · July 2026**
-
-*SC-200: Microsoft Security Operations Analyst · Project ATLAS*
 
 </div>
