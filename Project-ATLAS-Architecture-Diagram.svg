@@ -1,0 +1,74 @@
+<svg viewBox="0 0 960 660" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>Project ATLAS Logical Architecture v2</title>
+<desc>Diagram showing Microsoft cloud services connected over the internet to a MacBook Air host running VirtualBox, which runs two VMs (Kali Linux attacker and Windows 11 victim) each on isolated plain NAT, with VM-to-VM traffic relayed only via host port-forwarding rules.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<rect x="0" y="0" width="960" height="660" fill="#ffffff"/>
+
+<text x="480" y="26" text-anchor="middle" font-family="system-ui,sans-serif" font-size="19" font-weight="700" fill="#1e293b">Project ATLAS — Logical Architecture (v2)</text>
+<text x="480" y="46" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12.5" fill="#64748b">Updated 2026-06-20 — plain NAT per VM, cross-VM traffic relayed only through host port-forward rules</text>
+
+<!-- Cloud tier -->
+<g font-family="system-ui,sans-serif">
+<rect x="30" y="64" width="210" height="66" rx="8" fill="#eaf2fb" stroke="#2c5282" stroke-width="1.5"/>
+<text x="135" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#1e3a5f">Microsoft 365 E5</text>
+<text x="135" y="110" text-anchor="middle" font-size="11" fill="#3a587a">Defender for Office 365</text>
+
+<rect x="260" y="64" width="210" height="66" rx="8" fill="#eaf2fb" stroke="#2c5282" stroke-width="1.5"/>
+<text x="365" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#1e3a5f">Microsoft Sentinel</text>
+<text x="365" y="110" text-anchor="middle" font-size="11" fill="#3a587a">Log Analytics workspace</text>
+
+<rect x="490" y="64" width="210" height="66" rx="8" fill="#eaf2fb" stroke="#2c5282" stroke-width="1.5"/>
+<text x="595" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#1e3a5f">Defender for Cloud</text>
+<text x="595" y="110" text-anchor="middle" font-size="11" fill="#3a587a">Foundational CSPM (free)</text>
+
+<rect x="720" y="64" width="210" height="66" rx="8" fill="#eaf2fb" stroke="#2c5282" stroke-width="1.5"/>
+<text x="825" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#1e3a5f">Entra ID Protection</text>
+<text x="825" y="110" text-anchor="middle" font-size="11" fill="#3a587a">Conditional Access</text>
+</g>
+
+<!-- Internet arrow -->
+<line x1="480" y1="130" x2="480" y2="196" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="498" y="167" font-family="system-ui,sans-serif" font-size="11.5" fill="#475569">Internet (HTTPS, outbound only)</text>
+
+<!-- Host tier -->
+<rect x="30" y="200" width="900" height="100" rx="8" fill="#f1f5f9" stroke="#334155" stroke-width="1.5"/>
+<text x="480" y="224" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14" font-weight="700" fill="#1e293b">Host — MacBook Air M4 (ARM64) · macOS · VirtualBox 7.2</text>
+<text x="480" y="248" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11.5" fill="#475569">Windows forwards → 33389:3389 RDP · 33445:445 SMB · 35985:5985 WinRM</text>
+<text x="480" y="266" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11.5" fill="#475569">Kali forwards → 44444:4444 (reverse-shell listener)</text>
+<text x="480" y="286" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-style="italic" fill="#64748b">0 VirtualBox host-networking system extensions installed — plain NAT is the only working mode</text>
+
+<!-- Arrows host -> VMs -->
+<line x1="250" y1="300" x2="250" y2="416" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="258" y="360" font-family="system-ui,sans-serif" font-size="11" fill="#475569">NAT</text>
+<line x1="710" y1="300" x2="710" y2="416" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="718" y="360" font-family="system-ui,sans-serif" font-size="11" fill="#475569">NAT</text>
+
+<text x="480" y="404" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11.5" font-style="italic" fill="#7c2d12">No direct VM-to-VM path — only reachable via the host port-forward rules above</text>
+
+<!-- VM tier -->
+<rect x="60" y="420" width="380" height="140" rx="8" fill="#fdecea" stroke="#b91c1c" stroke-width="1.5"/>
+<text x="250" y="448" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14" font-weight="700" fill="#7f1d1d">Kali Linux ARM64 — attacker</text>
+<text x="250" y="472" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11.5" fill="#9a3412">eth0: 10.0.2.15/24 (plain NAT)</text>
+<text x="250" y="492" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11.5" fill="#9a3412">gateway 10.0.2.2 = "the host"</text>
+<text x="250" y="514" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#9a3412">Day 3: Nmap recon, Hydra brute force,</text>
+<text x="250" y="530" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#9a3412">reverse-shell listener on :4444</text>
+
+<rect x="520" y="420" width="380" height="140" rx="8" fill="#eaf2fb" stroke="#2c5282" stroke-width="1.5"/>
+<text x="710" y="448" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14" font-weight="700" fill="#1e3a5f">Windows 11 ARM64 — victim</text>
+<text x="710" y="472" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11.5" fill="#3a587a">Ethernet: 10.0.2.15/24 (plain NAT)</text>
+<text x="710" y="492" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11.5" fill="#3a587a">gateway 10.0.2.2 = "the host"</text>
+<text x="710" y="514" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#3a587a">Sysmon + Azure Arc + AMA -&gt; Sentinel</text>
+<text x="710" y="530" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#3a587a">RDP/SMB/WinRM exposed via forwards</text>
+
+<!-- Legend -->
+<rect x="60" y="590" width="14" height="14" fill="#fdecea" stroke="#b91c1c"/>
+<text x="80" y="601" font-family="system-ui,sans-serif" font-size="11.5" fill="#334155">Attacker (Kali)</text>
+<rect x="220" y="590" width="14" height="14" fill="#eaf2fb" stroke="#2c5282"/>
+<text x="240" y="601" font-family="system-ui,sans-serif" font-size="11.5" fill="#334155">Microsoft cloud / victim host</text>
+
+<text x="480" y="635" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#94a3b8">Replaces v1 (Internal Network, static IPs 192.168.50.x) — abandoned after VERR_INVALID_STATE crashes traced to zero host-networking extensions</text>
+</svg>

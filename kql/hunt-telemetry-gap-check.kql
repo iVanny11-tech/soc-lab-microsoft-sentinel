@@ -1,0 +1,83 @@
+// =============================================================================
+// ATLAS Threat Hunt — Telemetry Gap Discovery & Pipeline Health Check
+// Tables: SecurityEvent, Event (Sysmon), Heartbeat
+// Hunt type: Pre-hunt validation | Run BEFORE any endpoint hunting
+// =============================================================================
+//
+// Purpose:
+//   Validate that the AMA endpoint telemetry pipeline is functioning before
+//   running endpoint-layer threat hunts or relying on endpoint detection rules.
+//   A green result here means hunting queries will return meaningful data.
+//   A zero result means the pipeline is broken and all endpoint detections are blind.
+//
+// Project ATLAS finding:
+//   SecurityEvent count = 0, Sysmon Event count = 0.
+//   This finding was documented as "Telemetry Gap — Finding 2" in the Day 5 Final Report.
+//   All four endpoint-layer attack techniques were undetectable as a result.
+//
+// Remediation path if count = 0:
+//   1. Check Heartbeat table (query 4 below) — confirms AMA agent is alive
+//   2. Verify DCR resource: Azure Monitor → Data Collection Rules → confirm DESKTOP-TRF9U79 in Resources
+//   3. Re-register AMA agent on the Windows VM:
+//      az connectedmachine extension delete --name AzureMonitorWindowsAgent ...
+//      az connectedmachine extension create  --name AzureMonitorWindowsAgent ...
+//   4. Wait 5-10 minutes, re-run this script
+//
+// =============================================================================
+
+// Check 1 — SecurityEvent table record count (Windows Security Events via AMA)
+// Expected: > 0 (any events in the past 24h means pipeline is live)
+SecurityEvent
+| where TimeGenerated >= ago(24h)
+| summarize RecordCount = count()
+| extend
+    PipelineStatus = iff(RecordCount > 0, "✅ LIVE", "❌ BROKEN — SecurityEvent table empty"),
+    TableName      = "SecurityEvent";
+
+// Check 2 — Sysmon Event table record count
+// Expected: > 0 (process creation events should be frequent on an active Windows host)
+Event
+| where Source == "Microsoft-Windows-Sysmon"
+| where TimeGenerated >= ago(24h)
+| summarize RecordCount = count()
+| extend
+    PipelineStatus = iff(RecordCount > 0, "✅ LIVE", "❌ BROKEN — Sysmon Event table empty"),
+    TableName      = "Event (Sysmon)";
+
+// Check 3 — Most recent SecurityEvent per computer (identify stale feeds)
+SecurityEvent
+| summarize
+    LastEvent    = max(TimeGenerated),
+    EventCount   = count()
+  by Computer
+| extend HoursAgo = datetime_diff("hour", now(), LastEvent)
+| extend FeedHealth = case(
+    HoursAgo < 1,  "✅ Fresh (< 1h)",
+    HoursAgo < 6,  "⚠️ Recent (< 6h)",
+    HoursAgo < 24, "⚠️ Stale (< 24h)",
+                   "❌ Very stale or broken"
+  )
+| project Computer, LastEvent, HoursAgo, EventCount, FeedHealth
+| order by LastEvent desc;
+
+// Check 4 — AMA Heartbeat (confirms agent is alive and connected)
+// If this returns 0 while SecurityEvent returns 0, the agent itself is dead
+// If Heartbeat returns rows but SecurityEvent returns 0, DCR association is broken
+Heartbeat
+| where TimeGenerated >= ago(24h)
+| summarize
+    LastHeartbeat = max(TimeGenerated),
+    HeartbeatCount = count()
+  by Computer, OSType, Version
+| extend MinutesSinceHeartbeat = datetime_diff("minute", now(), LastHeartbeat)
+| extend AgentStatus = iff(MinutesSinceHeartbeat < 10, "✅ Healthy", "❌ Agent offline or not reporting")
+| project Computer, LastHeartbeat, MinutesSinceHeartbeat, HeartbeatCount, AgentStatus, Version
+| order by LastHeartbeat desc;
+
+// Check 5 — Sysmon coverage: confirm EventID 1 (process create) is flowing
+// A Sysmon deployment without EventID 1 is nearly useless for threat hunting
+Event
+| where Source == "Microsoft-Windows-Sysmon"
+| where TimeGenerated >= ago(24h)
+| summarize EventCount = count() by EventID
+| order by EventCount desc;

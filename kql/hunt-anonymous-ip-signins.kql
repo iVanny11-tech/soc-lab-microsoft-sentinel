@@ -1,0 +1,83 @@
+// =============================================================================
+// ATLAS Threat Hunt — Anonymous IP / Tor Sign-ins (T1078.004 + T1090.003)
+// Table: SigninLogs (Entra ID sign-in logs)
+// Hunt type: Retrospective | Lookback: configurable (default 30d)
+// MITRE: T1078.004 — Valid Accounts: Cloud | T1090.003 — Multi-hop Proxy
+// =============================================================================
+//
+// Purpose:
+//   Identify all cloud identity sign-ins from anonymous IP addresses (Tor exit
+//   nodes, VPNs, proxy services) across the full tenant — not just the accounts
+//   already flagged by Entra ID Protection. Designed to find lateral scope:
+//   "Did the attacker try other accounts from the same Tor exit IPs?"
+//
+// Project ATLAS result:
+//   Hunt confirmed 2 users flagged (admin + soc-tor-test), 5 sign-in events,
+//   2 Tor exit IPs (Germany + Sweden). No additional lateral scope discovered.
+//   This is the correct result for a contained simulation.
+//
+// =============================================================================
+
+let LookbackDays = 30d;
+let KnownSafeIPs = dynamic(["YOUR_HOME_IP_HERE"]);    // populate for prod
+
+// Query 1 — All anonymous IP sign-ins with risk metadata
+SigninLogs
+| where TimeGenerated >= ago(LookbackDays)
+| where RiskEventTypes has "anonymizedIPAddress"
+| extend
+    City    = tostring(LocationDetails.city),
+    Country = tostring(LocationDetails.countryOrRegion),
+    Region  = tostring(LocationDetails.state)
+| summarize
+    SignInCount       = count(),
+    SuccessCount      = countif(ResultType == "0"),
+    FailureCount      = countif(ResultType != "0"),
+    Locations         = make_set(strcat(City, ", ", Country)),
+    RiskLevels        = make_set(RiskLevelDuringSignIn),
+    Apps              = make_set(AppDisplayName),
+    FirstSeen         = min(TimeGenerated),
+    LastSeen          = max(TimeGenerated)
+  by UserPrincipalName, IPAddress
+| extend AttemptedBeyondDetection = SuccessCount > 0 and FailureCount > 0
+| where IPAddress !in (KnownSafeIPs)
+| order by SignInCount desc;
+
+// Query 2 — Sign-in velocity anomaly: same IP hitting multiple accounts
+// (lateral movement via credential stuffing)
+SigninLogs
+| where TimeGenerated >= ago(LookbackDays)
+| where RiskEventTypes has "anonymizedIPAddress"
+| summarize
+    UniqueUsers  = dcount(UserPrincipalName),
+    AllUsers     = make_set(UserPrincipalName),
+    TotalSignIns = count()
+  by IPAddress
+| where UniqueUsers > 1
+| order by UniqueUsers desc;
+
+// Query 3 — Countries not previously seen for each user (impossible travel)
+let BaselineWindow  = 90d;
+let IncidentWindow  = 30d;
+
+let HistoricCountries =
+    SigninLogs
+    | where TimeGenerated between (ago(BaselineWindow) .. ago(IncidentWindow))
+    | extend Country = tostring(LocationDetails.countryOrRegion)
+    | summarize HistoricCountries = make_set(Country) by UserPrincipalName;
+
+SigninLogs
+| where TimeGenerated >= ago(IncidentWindow)
+| extend Country = tostring(LocationDetails.countryOrRegion)
+| join kind=leftouter HistoricCountries on UserPrincipalName
+| where not(set_has_element(HistoricCountries, Country))
+| where isnotempty(Country)
+| project
+    TimeGenerated,
+    UserPrincipalName,
+    IPAddress,
+    Country,
+    RiskLevelDuringSignIn,
+    ResultType,
+    AppDisplayName
+| order by TimeGenerated desc;

@@ -1,0 +1,62 @@
+// =============================================================================
+// ATLAS Rule 4.2 — Encoded PowerShell Execution (T1059.001 + T1027)
+// Table: Event (Sysmon via AMA) — EventID 1 (Process Create)
+// Schedule: Every 5 minutes | Lookback: 10 minutes
+// Severity: High
+// MITRE: T1059.001 — PowerShell | T1027 — Obfuscated Files or Information
+// =============================================================================
+//
+// Purpose:
+//   Detects execution of PowerShell with the -EncodedCommand (-enc) flag,
+//   a common indicator of command obfuscation used in attack chains to
+//   evade command-line detection. Sysmon EventID 1 captures full command-line
+//   arguments including the base64 payload.
+//
+// Project ATLAS finding:
+//   This rule was non-functional during the simulation. Sysmon was installed
+//   and running on DESKTOP-TRF9U79, but the AMA DCR was not forwarding events
+//   (Event | where Source == "Microsoft-Windows-Sysmon" | summarize count() = 0).
+//
+// Validation query:
+//   Event
+//   | where Source == "Microsoft-Windows-Sysmon"
+//   | where EventID == 1
+//   | take 5
+//   Expected: recent process creation events. If 0, Sysmon/AMA DCR is broken.
+//
+// =============================================================================
+
+Event
+| where TimeGenerated >= ago(10m)
+| where Source == "Microsoft-Windows-Sysmon"
+| where EventID == 1                                          // Process Create
+| extend ParsedData = parse_xml(EventData)
+| extend
+    CommandLine  = tostring(ParsedData.DataItem.EventData.Data[9]["#text"]),
+    ParentCmdLine= tostring(ParsedData.DataItem.EventData.Data[20]["#text"]),
+    Image        = tostring(ParsedData.DataItem.EventData.Data[4]["#text"]),
+    ParentImage  = tostring(ParsedData.DataItem.EventData.Data[20]["#text"]),
+    User         = tostring(ParsedData.DataItem.EventData.Data[12]["#text"]),
+    ProcessId    = tostring(ParsedData.DataItem.EventData.Data[3]["#text"])
+| where Image has "powershell"
+  and (
+    CommandLine has "-enc"
+    or CommandLine has "-EncodedCommand"
+    or CommandLine has "-e "
+    or CommandLine matches regex @"-[eE][nN]?[cC]?"
+  )
+| extend
+    EncodedPayloadLength = strlen(extract(@"-[eEnNcC]+\s+([A-Za-z0-9+/=]+)", 1, CommandLine)),
+    IsLongPayload        = strlen(CommandLine) > 200
+| project
+    TimeGenerated,
+    Computer,
+    User,
+    ProcessId,
+    Image,
+    CommandLine,
+    ParentImage,
+    ParentCmdLine,
+    EncodedPayloadLength,
+    IsLongPayload
+| order by TimeGenerated desc

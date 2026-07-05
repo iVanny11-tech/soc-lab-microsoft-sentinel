@@ -1,0 +1,207 @@
+{
+  "name": "Project ATLAS — ATT&CK Coverage",
+  "versions": {
+    "attack": "14",
+    "navigator": "4.9.1",
+    "layer": "4.5"
+  },
+  "domain": "enterprise-attack",
+  "description": "MITRE ATT&CK heatmap for Project ATLAS SOC Tier 1/2 simulation. Techniques simulated and detected during a 5-day cloud + endpoint attack simulation on Azure/M365 (July 2026). Red = simulated but NOT detected (telemetry gap). Green = simulated AND detected. Yellow = detected by cloud identity only (partial coverage).",
+  "filters": {
+    "platforms": [
+      "Windows",
+      "Azure AD",
+      "Office 365",
+      "SaaS"
+    ]
+  },
+  "sorting": 0,
+  "layout": {
+    "layout": "side",
+    "aggregateFunction": "average",
+    "showID": true,
+    "showName": true,
+    "showAggregateScores": false,
+    "countUnscored": false,
+    "expandedSubtechniques": "annotated"
+  },
+  "hideDisabled": false,
+  "techniques": [
+    {
+      "techniqueID": "T1110",
+      "tactic": "credential-access",
+      "score": 25,
+      "color": "#e05c5c",
+      "comment": "SIMULATED — NOT DETECTED. Hydra RDP brute force attack from Kali (10.0.2.15) against DESKTOP-TRF9U79 soclab-test account. Expected to fire ATLAS rule 4.1 (SecurityEvent 4625 spike). Actual result: SecurityEvent table = 0 records (AMA pipeline failure). No Sentinel alert generated.",
+      "enabled": true,
+      "metadata": [],
+      "links": [],
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1110.001",
+      "tactic": "credential-access",
+      "score": 25,
+      "color": "#e05c5c",
+      "comment": "SIMULATED — NOT DETECTED. Hydra password guessing via RDP (TCP 3389, NAT port 33389). ~100 attempts before successful logon. EventID 4625 should appear in SecurityEvent table. AMA pipeline failure caused 0 records in SecurityEvent. Detection gap confirmed via KQL: SecurityEvent | summarize count() = 0.",
+      "enabled": true,
+      "metadata": [],
+      "links": [],
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1059",
+      "tactic": "execution",
+      "score": 25,
+      "color": "#e05c5c",
+      "comment": "SIMULATED — NOT DETECTED. Base64-encoded PowerShell command executed post-RDP access. Expected to fire ATLAS rule 4.2 (Sysmon EventID 1 -enc pattern). Actual result: Sysmon Event table = 0 records (AMA pipeline failure).",
+      "enabled": true,
+      "metadata": [],
+      "links": [],
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1059.001",
+      "tactic": "execution",
+      "score": 25,
+      "color": "#e05c5c",
+      "comment": "SIMULATED — NOT DETECTED. PowerShell -enc <base64> executed on DESKTOP-TRF9U79. Sysmon EventID 1 process create should capture command line. AMA failure = 0 records in Event table. ATLAS rule 4.2 did not fire.",
+      "enabled": true,
+      "metadata": [],
+      "links": [],
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1027",
+      "tactic": "defense-evasion",
+      "score": 25,
+      "color": "#e05c5c",
+      "comment": "SIMULATED — NOT DETECTED. Base64 encoding used to obfuscate PowerShell command (paired with T1059.001). Sysmon command-line logging would capture the -enc flag and encoded blob. AMA failure = no visibility.",
+      "enabled": true,
+      "metadata": [],
+      "links": [],
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1566",
+      "tactic": "initial-access",
+      "score": 50,
+      "color": "#e8a838",
+      "comment": "SIMULATED — PARTIALLY TRACKED. M365 Attack Simulation Training (Credential Harvest template). 1 click, 1 credential submission captured in Microsoft 365 Defender Attack simulation training reports. Not forwarded to Log Analytics / Sentinel — no huntable telemetry in SIEM. Partial credit: event occurred and was captured in M365 Defender portal.",
+      "enabled": true,
+      "metadata": [],
+      "links": [],
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1566.002",
+      "tactic": "initial-access",
+      "score": 50,
+      "color": "#e8a838",
+      "comment": "SIMULATED — PARTIALLY TRACKED. Spearphishing Link template: fake Microsoft login page. User clicked and submitted credentials. Tracked in M365 Attack Simulation Training portal. Not a real incident in Defender XDR (simulation is flagged safe). No SIEM telemetry.",
+      "enabled": true,
+      "metadata": [],
+      "links": [],
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1078",
+      "tactic": "initial-access",
+      "score": 100,
+      "color": "#54a354",
+      "comment": "DETECTED — FULL COVERAGE. Valid cloud account (soc-tor-test@VANPASSSC200.onmicrosoft.com) used to authenticate via Tor exit nodes. Detected by Entra ID Protection (Anonymous IP address + Anomalous Token). Correlated into Incident ID 2 by Defender XDR. Analyst classified True positive. User confirmed compromised.",
+      "enabled": true,
+      "metadata": [],
+      "links": [],
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1078.004",
+      "tactic": "initial-access",
+      "score": 100,
+      "color": "#54a354",
+      "comment": "DETECTED — FULL COVERAGE. Cloud account sign-in via Tor anonymizing proxy. Entra ID Protection fired 5 Anonymous IP address risk detections and 3 Anomalous Token detections. Classified true positive. Conditional Access policy created to block future anonymous IP sign-ins.",
+      "enabled": true,
+      "metadata": [],
+      "links": [],
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1090",
+      "tactic": "command-and-control",
+      "score": 100,
+      "color": "#54a354",
+      "comment": "DETECTED — FULL COVERAGE. Tor Browser used as anonymizing proxy to sign in to M365/Entra ID. Source IPs: 2a03:4000:46:197:b434:d3ff:fe68:d9e1 (Karlsruhe, DE), 2a0f:df00:0:255::194 (Sweden). Entra ID Protection identified as anonymous IP (Tor exit node).",
+      "enabled": true,
+      "metadata": [],
+      "links": [],
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1090.003",
+      "tactic": "command-and-control",
+      "score": 100,
+      "color": "#54a354",
+      "comment": "DETECTED — FULL COVERAGE. Multi-hop proxy via Tor network. Exit nodes in Germany and Sweden. Entra ID Protection anonymous IP detection fired on each successful sign-in. 5 total detections across 2 Tor exit IPs.",
+      "enabled": true,
+      "metadata": [],
+      "links": [],
+      "showSubtechniques": false
+    }
+  ],
+  "gradient": {
+    "colors": [
+      "#e05c5c",
+      "#e8a838",
+      "#54a354"
+    ],
+    "minValue": 0,
+    "maxValue": 100
+  },
+  "legendItems": [
+    {
+      "label": "Simulated — NOT detected (AMA telemetry gap)",
+      "color": "#e05c5c"
+    },
+    {
+      "label": "Simulated — Partially tracked (M365 Defender only, no SIEM)",
+      "color": "#e8a838"
+    },
+    {
+      "label": "Simulated — DETECTED (Entra ID Protection + Defender XDR)",
+      "color": "#54a354"
+    }
+  ],
+  "metadata": [
+    {
+      "name": "Project",
+      "value": "ATLAS"
+    },
+    {
+      "name": "Environment",
+      "value": "Azure / M365 / VirtualBox (MacBook Air M4)"
+    },
+    {
+      "name": "Analyst",
+      "value": "Ivan Yamoah Baoakye"
+    },
+    {
+      "name": "Date",
+      "value": "July 2026"
+    },
+    {
+      "name": "SIEM",
+      "value": "Microsoft Sentinel (law-soc-atlas, East US)"
+    },
+    {
+      "name": "Key Finding",
+      "value": "Endpoint telemetry gap (AMA) left 4/6 techniques blind. Cloud identity detection (Entra ID Protection) performed as expected."
+    }
+  ],
+  "links": [],
+  "showTacticRowBackground": true,
+  "tacticRowBackground": "#dddddd",
+  "selectTechniquesAcrossTactics": true,
+  "selectSubtechniquesWithParent": false,
+  "selectVisibleTechniques": false
+}

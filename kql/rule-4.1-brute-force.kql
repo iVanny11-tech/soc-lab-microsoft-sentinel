@@ -1,0 +1,67 @@
+// =============================================================================
+// ATLAS Rule 4.1 — Brute Force Failed Logon Spike (T1110.001)
+// Table: SecurityEvent (Windows Security Events via AMA)
+// Schedule: Every 5 minutes | Lookback: 15 minutes
+// Severity: High
+// MITRE: T1110.001 — Brute Force: Password Guessing
+// =============================================================================
+//
+// Purpose:
+//   Detects a spike of failed RDP/interactive logon attempts (EventID 4625)
+//   followed by a successful logon (EventID 4624) from the same source IP —
+//   the classic pattern of an automated brute force attack.
+//
+// Project ATLAS finding:
+//   This rule was non-functional during the simulation period because the AMA
+//   pipeline failed to deliver data to the SecurityEvent table
+//   (SecurityEvent | summarize count() = 0). Fix AMA agent health first.
+//
+// Validation query (run this before relying on the rule):
+//   SecurityEvent | summarize count()
+//   Expected: > 0. If 0, AMA pipeline is broken — rule will not fire.
+//
+// =============================================================================
+
+let LookbackWindow    = 15m;
+let FailureThreshold  = 10;    // tunable: lower for high-value targets
+let BruteForceIP =
+    SecurityEvent
+    | where TimeGenerated >= ago(LookbackWindow)
+    | where EventID == 4625                         // Logon failure
+    | where LogonType in (3, 10)                    // Network or RemoteInteractive (RDP)
+    | summarize
+        FailureCount = count(),
+        TargetAccounts = make_set(TargetUserName),
+        FirstSeen = min(TimeGenerated),
+        LastSeen  = max(TimeGenerated)
+      by IpAddress, Computer
+    | where FailureCount >= FailureThreshold;
+
+let SuccessAfterBrute =
+    SecurityEvent
+    | where TimeGenerated >= ago(LookbackWindow)
+    | where EventID == 4624                         // Logon success
+    | where LogonType in (3, 10)
+    | project
+        SuccessTime     = TimeGenerated,
+        SuccessIP       = IpAddress,
+        SuccessAccount  = TargetUserName,
+        Computer;
+
+BruteForceIP
+| join kind=leftouter SuccessAfterBrute on $left.IpAddress == $right.SuccessIP
+| extend
+    SuccessfulLogonAfterBrute = isnotempty(SuccessTime),
+    Severity = iff(isnotempty(SuccessTime), "High", "Medium")
+| project
+    FirstSeen,
+    LastSeen,
+    Computer,
+    AttackSourceIP   = IpAddress,
+    FailureCount,
+    TargetAccounts,
+    SuccessfulLogonAfterBrute,
+    SuccessAccount,
+    SuccessTime,
+    Severity
+| order by FailureCount desc
