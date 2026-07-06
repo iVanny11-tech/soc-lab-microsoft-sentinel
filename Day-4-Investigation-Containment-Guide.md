@@ -13,7 +13,11 @@ Goal for today: switch from attacker to analyst. Triage everything Day 3 generat
    - Possibly one tied to the Tor sign-in risk, since Entra ID Protection risk detections surface into the same unified queue
 3. **The phishing simulation usually won't appear here as a real incident** — it's intentionally benign/simulated, so Defender for Office 365 tracks it under Attack simulation training reporting rather than raising a security incident. That's expected, not a gap.
 4. Note in your documentation that, unlike a tenant with Defender for Endpoint, these two incidents are surfaced entirely by your own custom analytics rules rather than a blend of custom + native vendor detections — a direct consequence of the Sysmon/Arc pivot (see Day 1, Part F). Worth a sentence in the report: the detection logic here is fully yours, which is arguably a stronger demonstration of the "creating analytic triggers" JD bullet than relying on a vendor's built-in alert.
-5. For each real incident: open it, walk the **incident graph/timeline**, check the **Alerts** and **Assets** tabs to confirm the device (`DESKTOP-TRF9U79`) and account (`soclab-test`) involved, classify it as a **true positive**, and add a comment to the incident summarizing your triage reasoning (one or two sentences — e.g. "Confirmed brute force against soclab-test from Kali test VM, Project ATLAS Day 3 simulation. Proceeding to containment.").
+5. For each real incident: open it, walk the **incident graph/timeline** — the attack story shows how all correlated alerts connect into a single kill chain.
+
+   ![Defender XDR incident attack story — correlated alerts](assets/screenshots/23-incident-attack-story.png)
+
+   Check the **Alerts** and **Assets** tabs to confirm the device (`DESKTOP-TRF9U79`) and account (`soclab-test`) involved, classify it as a **true positive**, and add a comment to the incident summarizing your triage reasoning (one or two sentences — e.g. "Confirmed brute force against soclab-test from Kali test VM, Project ATLAS Day 3 simulation. Proceeding to containment.").
 6. Leave status as **Active** for now — you'll set incidents to **Resolved** once containment (Parts C–E) is done.
 
 ---
@@ -57,8 +61,14 @@ This is your evidence for the "containment" half of the JD's incident response b
 ## Part D — Remediate the risky user in Entra ID (10 min)
 
 1. **Entra admin center (entra.microsoft.com) → Protection → Identity Protection → Risky users.**
-2. Select the test account flagged from Tuesday's Tor sign-in. Review its **Risk state**, **Risk level**, and the **Risk detections** list.
-3. Click **Confirm compromised** — this is the realistic SOC action for a true-positive compromise (as opposed to "Dismiss user risk," which is for false positives).
+2. Select the test account flagged from Tuesday's Tor sign-in. Review its **Risk state**, **Risk level**, and the **Risk detections** list — you should see both the Anonymous IP Address and Anomalous Token detections.
+
+   ![Entra ID Protection — Anonymous IP and Anomalous Token risk detections](assets/screenshots/21-anonymous-ip-anomalous-token.png)
+
+3. Click **Confirm compromised** — this is the realistic SOC action for a true-positive compromise (as opposed to "Dismiss user risk," which is for false positives). A toast notification confirms the action.
+
+   ![Confirm compromised action confirmed in Entra ID Protection](assets/screenshots/26-confirm-compromised-toast.png)
+
 4. Separately, reset the test account's password to fully remediate (Confirm compromised flags the account; it doesn't change the password for you).
 5. Note your reasoning in the incident comment from Part A, or in your running notes for Day 5.
 
@@ -76,6 +86,8 @@ A real practical safety note first: scope this to your **test user only**, not "
 6. **Grant**: choose **Block access** (matches the project's stated goal of blocking anonymous/Tor sign-ins). **Require multifactor authentication** is the lighter-touch alternative many real orgs use instead of an outright block — worth mentioning you considered it.
 7. **Enable policy: set to "Report-only"** rather than "On." This is the real-world best practice — you see what the policy *would* have done without risking a lockout, which matters even more in a single-admin lab than in a large org.
 8. Save.
+
+   ![Conditional Access policy created — Block anonymous IP sign-in](assets/screenshots/29-conditional-access-policy-created.png)
 9. To verify: check **Entra admin center → Monitoring → Sign-in logs → filter by "Report-only (preview)"** — if the test user signs in again over Tor, you should see the event flagged as "would have been blocked." Screenshot that.
 10. Document why you left it in Report-only rather than flipping to "On" (single-user lab, no production traffic at risk, but the correct rollout procedure either way) — that's a good line for your README and for interview conversation.
 

@@ -259,6 +259,8 @@ Do this once and the rest of the project (Days 2–5 have heavy KQL/PowerShell c
 7. Operating system: **Windows**. Connectivity method: **Public endpoint** (default — fine for this lab). Click **Next: Generate script**.
 8. On the script-generation page, **Generate script** → **Download**. This saves `OnboardingScript.ps1`.
    - 📸 The "Generate script" page just before/after download.
+
+   ![Azure Arc onboarding script generated](assets/screenshots/00c-azure-arc-onboarding-script.png)
 9. Get this script into the Windows VM via a VirtualBox Shared Folder:
    - VirtualBox Manager → select `Windows11-Victim` → **Settings → Shared Folders → +** (Add).
    - Folder Path: browse to wherever `OnboardingScript.ps1` downloaded.
@@ -267,6 +269,9 @@ Do this once and the rest of the project (Days 2–5 have heavy KQL/PowerShell c
    - Copy `OnboardingScript.ps1` from the shared folder onto the VM's desktop.
 10. Right-click `OnboardingScript.ps1` on the desktop → **Run with PowerShell** (or open an elevated PowerShell window and run `.\OnboardingScript.ps1` from the Desktop).
     - 📸 The PowerShell window mid-run.
+
+    ![Azure Arc onboarding script running inside Windows VM](assets/screenshots/00d-azure-arc-script-running-vm.png)
+
     - It opens a browser device-code sign-in — sign in with your Azure admin account when prompted.
     - 📸 The device-code sign-in screen (crop/blur the code itself — it expires in minutes anyway).
 11. Wait for the script to finish (a "this machine is now connected to Azure Arc" or similar success message).
@@ -282,10 +287,14 @@ Do this once and the rest of the project (Days 2–5 have heavy KQL/PowerShell c
     .\Sysmon64.exe -accepteula -i sysmonconfig-export.xml
     ```
     - 📸 The command and its "Sysmon installed" output.
+
+    ![Sysmon service started and installed](assets/screenshots/02-sysmon-service-started.png)
 17. Verify it's logging: open **Event Viewer** → **Applications and Services Logs → Microsoft-Windows-Sysmon → Operational**. You should already see events accumulating — Sysmon logs activity immediately on install.
     - 📸 Event Viewer showing Sysmon Operational events.
 18. Back in the Azure portal, top search bar → type `Data Collection Rules` → click the matching result → **+ Create**.
 19. **Basics tab:** Rule name `dcr-soc-atlas-sysmon`, Resource group `rg-soc-atlas`, Region matching your workspace, Platform Type **Windows**. Click **Next: Resources**.
+
+   ![DCR creation — Basics tab](assets/screenshots/04-dcr-creation-basics.png)
 20. **Resources tab:** **+ Add resources** → find and select your Arc machine by its actual hostname (e.g. `DESKTOP-TRF9U79` — filter the resource type to "Machines - Azure Arc" if it's hard to find) → **Add**. Click **Next: Collect and deliver**.
 21. **Collect and deliver tab:** **+ Add data source** → Data source type: **Windows Event Logs**.
     - Leave the "Basic" checkbox list unchecked.
@@ -297,10 +306,15 @@ Do this once and the rest of the project (Days 2–5 have heavy KQL/PowerShell c
     - Click **Next**.
     - 📸 The data source configuration showing both XPath queries.
 22. **Destination:** **+ Add destination** → Destination type **Azure Monitor Logs** → select your subscription → select the `law-soc-atlas` workspace → **Add data source**.
+
+   ![DCR destination configured — law-soc-atlas workspace](assets/screenshots/06-dcr-destination-law.png)
+
 23. **Review + create** → **Create**. Wait for deployment to finish.
     - 📸 DCR deployment complete.
 24. The first DCR associated with an Arc machine usually prompts Azure to install the **Azure Monitor Agent** extension automatically — accept that if prompted. If it doesn't prompt, go to your Arc machine resource (by its hostname, e.g. `DESKTOP-TRF9U79`) → **Extensions** → **+ Add** → search "Azure Monitor Agent" → install it manually.
     - 📸 Extensions list on the Arc machine showing AzureMonitorWindowsAgent as Succeeded.
+
+    ![AMA extension installed and succeeded on Arc machine](assets/screenshots/07-ama-extension-installed.png)
 25. Give it 5–15 minutes, then verify in the `law-soc-atlas` workspace (or Sentinel's Logs blade once Part G connects it) → **Logs**:
     ```kql
     Heartbeat
@@ -340,6 +354,8 @@ Resource providers and the Log Analytics workspace are already done — Part F, 
 12. Click **Connect**.
 13. Click **Connect** again on the confirmation prompt.
     - 📸 **Screenshot (must-have):** Sentinel showing the connected workspace — this is the centerpiece tool of the whole project; lead the README's tooling section with it.
+
+    ![Microsoft Sentinel connected to law-soc-atlas workspace](assets/screenshots/00b-sentinel-connected-to-law.png)
 14. Still inside security.microsoft.com, find the **Microsoft Sentinel** section in the left nav and click **Content management**.
 15. Click **Content hub**.
 16. In the search box, type `Microsoft Defender XDR`.

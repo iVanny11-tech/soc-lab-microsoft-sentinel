@@ -33,6 +33,9 @@ This step exists so your portfolio shows you can operate vendor-supplied detecti
 ## Part C — Custom rule 4.1: brute-force failed-logon spike (20 min)
 
 1. **Configuration → Analytics → + Create → Scheduled query rule.**
+
+   ![Sentinel analytics rule creation wizard](assets/screenshots/08-sentinel-rule-wizard.png)
+
 2. **General tab:**
    - Name: `ATLAS - Brute force failed logon spike`
    - Description: detects 5+ failed logons to the same device from the same IP within a 5-minute window
@@ -48,6 +51,9 @@ This step exists so your portfolio shows you can operate vendor-supplied detecti
    | order by FailedAttempts desc
    ```
    This reads the same Windows Security log EventID 4625 (failed logon) that Defender for Endpoint's `DeviceLogonEvents` would have summarized — just sourced from the `SecurityEvent` table the AMA-forwarded Security log lands in instead.
+
+   ![Rule 4.1 KQL brute force query in Sentinel rule wizard](assets/screenshots/09-sentinel-rule-4-1-kql.png)
+
 4. Click **Test with current data** — expect 0 results today (no attack yet), that's correct, not broken.
 5. **Query scheduling**: set **Run query every: 5 minutes**, **Lookup data from the last: 5 minutes**. The `ago(1d)` inside the query is now redundant with the rule's own 5-minute window — that's harmless, just leave it; the rule's scheduling settings are what actually control how much data gets scanned each run.
 6. **Alert threshold**: trigger when results are **greater than 0**.
@@ -61,6 +67,9 @@ This step exists so your portfolio shows you can operate vendor-supplied detecti
 ## Part D — Custom rule 4.2: encoded PowerShell execution (15 min)
 
 1. **Configuration → Analytics → + Create → Scheduled query rule.**
+
+   ![Sentinel analytics rule wizard for rule 4.2](assets/screenshots/10-sentinel-rule-4-2-wizard.png)
+
 2. **General tab:**
    - Name: `ATLAS - Encoded PowerShell execution`
    - Severity: **High** (obfuscated execution is a stronger signal than a single failed login)
@@ -77,6 +86,9 @@ This step exists so your portfolio shows you can operate vendor-supplied detecti
    | where CommandLine has_any ("-enc", "-EncodedCommand", "-e ")
    | project TimeGenerated, Computer, User, Image, CommandLine
    ```
+
+   ![Rule 4.2 KQL encoded PowerShell query in Sentinel rule wizard](assets/screenshots/11-sentinel-rule-4-2-kql.png)
+
    Worth a note for your README: MDE's `DeviceProcessEvents` gives you `AccountName` as a clean column already; Sysmon's raw `Event` rows bury the same value inside `RenderedDescription`'s text block, so it has to be pulled out with `extract()` like `Image` and `CommandLine` are. This is closer to real detection-engineering work against raw Windows Event Log data than against a vendor's pre-parsed EDR schema.
 4. **Query scheduling**: **Run every 5 minutes**, **lookup last 5 minutes** — same reasoning as rule 4.1.
 5. **Entity mapping**: map **Host = Computer** and **Account = User**.

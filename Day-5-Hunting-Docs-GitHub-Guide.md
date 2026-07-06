@@ -20,7 +20,10 @@ Goal for today: run the two proactive hunts, write up the formal incident report
    | where SourceIp == AttackerIP or DestinationIp == AttackerIP
    | project TimeGenerated, Computer, Image, SourceIp, DestinationIp, DestinationPort
    ```
-   Run it. You should see the reverse-shell connection from Day 3 in the results. Screenshot.
+   Run it. If the Sysmon/Event table returns 0 rows — this is the telemetry gap finding. Document it as a Priority 1 finding: the AMA pipeline was configured but not ingesting.
+
+   ![Sysmon Event table returns zero rows — telemetry gap confirmed](assets/screenshots/28-sysmon-zero-telemetry-gap.png)
+
 3. **Hunt 4.4 — risky sign-ins.**
    ```kql
    EntraIdSignInEvents

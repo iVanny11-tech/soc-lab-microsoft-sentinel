@@ -95,8 +95,15 @@ If you haven't already, create a disposable Entra test user dedicated to this st
 
 1. **Microsoft Entra admin center (entra.microsoft.com) → Identity → Users → New user → Create new user.** Username e.g. `soc-test-user@<yourtenant>.onmicrosoft.com`, no admin roles.
 2. Assign your Entra ID P2 license to this user (Identity Protection's full risk detection and risk-based policies need P2 on the affected account — this is the same P2 license from your trial).
+
+   ![Entra ID P2 license assigned to test user](assets/screenshots/00a-entra-p2-license-assigned.png)
+
 3. On Kali, open **Tor Browser** → go to `https://login.microsoftonline.com` → sign in as the test user.
-4. Tor exit nodes are commonly flagged as anonymous proxies, so Entra ID Protection should raise an **"anonymous IP address"** risk detection. It isn't always instant — check back within the hour. If the detection that fires is instead something like "unfamiliar sign-in properties" or "atypical travel" rather than literally "anonymous IP," that's still a legitimate result (different detection logic catching the same underlying anomaly) — note whichever one actually fires.
+4. Tor Browser will trigger a Microsoft MFA / risk prompt during the sign-in flow — this is Entra ID Protection acting in real time.
+
+   ![Tor Browser MFA prompt during Entra sign-in](assets/screenshots/18-tor-browser-mfa-prompt.png)
+
+   Tor exit nodes are commonly flagged as anonymous proxies, so Entra ID Protection should raise an **"anonymous IP address"** risk detection. It isn't always instant — check back within the hour. If the detection that fires is instead something like "unfamiliar sign-in properties" or "atypical travel" rather than literally "anonymous IP," that's still a legitimate result (different detection logic catching the same underlying anomaly) — note whichever one actually fires.
 5. Check **Entra admin center → Protection → Identity Protection → Risky sign-ins** and **Risky users** to confirm it landed.
 6. Screenshot the risk detection detail. This is your evidence for **T1078.004 + T1090.003**.
 
